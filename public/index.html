@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DIGIPIN - Precision Location</title>
+
+    <!-- Leaflet CSS -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-container">
+      <!-- Minimal Header -->
+      <header class="header">
+        <div class="brand">
+          <img
+            src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Ministry_of_Communications_India.svg/1920px-Ministry_of_Communications_India.svg.png"
+            alt="Ministry of Communications"
+            class="logo-mini"
+          />
+          <span class="brand-name">DIGIPIN</span>
+        </div>
+        <nav class="nav-links">
+          <a href="#" class="nav-link active">Home</a>
+          <a href="/api-docs" target="_blank" class="nav-link">API Docs</a>
+        </nav>
+      </header>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <div class="hero-section">
+          <h1 class="hero-title">Location, Simplified.</h1>
+          <p class="hero-subtitle">
+            Generate or decode precise 4m x 4m location codes instantly.
+          </p>
+        </div>
+
+        <div class="interaction-card">
+          <!-- Tabs -->
+          <div class="tabs">
+            <button class="tab-btn active" data-tab="generate">Generate</button>
+            <button class="tab-btn" data-tab="decode">Decode</button>
+          </div>
+
+          <!-- Generate View -->
+          <div id="generateTab" class="tab-content active">
+            <div class="generate-wrapper">
+              <button id="generateBtn" class="btn-primary large-btn">
+                <span class="icon">📍</span>
+                <span>Get My Current Location</span>
+              </button>
+
+              <div id="loadingMsg" class="status-msg" style="display: none">
+                <div class="spinner"></div>
+                <span>Locating...</span>
+              </div>
+
+              <div id="errorMsg" class="status-msg error" style="display: none">
+                <span class="error-icon">⚠️</span>
+                <span id="errorText"></span>
+              </div>
+            </div>
+
+            <!-- Result (Initially Hidden) -->
+            <div
+              id="resultSection"
+              class="result-container"
+              style="display: none"
+            >
+              <div class="digipin-box">
+                <span id="digipinCode" class="code-display"></span>
+                <button id="copyBtn" class="btn-icon" title="Copy">
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <rect
+                      x="9"
+                      y="9"
+                      width="13"
+                      height="13"
+                      rx="2"
+                      ry="2"
+                    ></rect>
+                    <path
+                      d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
+                    ></path>
+                  </svg>
+                </button>
+              </div>
+              <p id="coordsText" class="coords-display"></p>
+
+              <div class="action-row">
+                <button id="shareBtn" class="btn-text">Share</button>
+                <span class="divider">•</span>
+                <button id="googleMapsBtn" class="btn-text">Open Maps</button>
+              </div>
+
+              <div id="map" class="map-view"></div>
+            </div>
+          </div>
+
+          <!-- Decode View -->
+          <div id="decodeTab" class="tab-content">
+            <div class="input-wrapper">
+              <input
+                type="text"
+                id="decodeInput"
+                placeholder="Enter DIGIPIN (e.g. 4P3-JK8-52C9)"
+                maxlength="12"
+                autocomplete="off"
+              />
+              <button id="decodeBtn" class="btn-primary">Find</button>
+            </div>
+
+            <div
+              id="decodeResult"
+              class="result-container"
+              style="display: none"
+            >
+              <div class="coords-display large">
+                <span id="decodeLat"></span>, <span id="decodeLon"></span>
+              </div>
+              <button id="showDecodeMapBtn" class="btn-secondary full-width">
+                View on Map
+              </button>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <footer class="footer">
+        <p>India Post &bull; IIT Hyderabad &bull; NRSC (ISRO)</p>
+      </footer>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" class="toast"></div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

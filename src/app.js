@@ -17,10 +17,18 @@ app.use(cors());
 app.use(express.json());
 app.use(morgan('dev'));
 
+// Serve static files from 'public' directory
+app.use(express.static(path.join(__dirname, '../public')));
+
 // Swagger Docs Route
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // DIGIPIN API Routes
 app.use('/api/digipin', digipinRoutes);
+
+// Serve index.html for root route
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, '../public/index.html'));
+});
 
 module.exports = app;
