@@ -6,6 +6,9 @@ let marker = null;
 
 // DOM Elements
 const generateBtn = document.getElementById('generateBtn');
+const manualGenerateBtn = document.getElementById('manualGenerateBtn');
+const manualLatInput = document.getElementById('manualLat');
+const manualLonInput = document.getElementById('manualLon');
 const loadingMsg = document.getElementById('loadingMsg');
 const errorMsg = document.getElementById('errorMsg');
 const errorText = document.getElementById('errorText');
@@ -171,7 +174,7 @@ function initMap(latitude, longitude, digipinLabel) {
     const customIcon = L.divIcon({
         className: 'custom-marker',
         html: `<div style="
-            background: #2563eb;
+            background: #4F46E5;
             color: white;
             padding: 6px 10px;
             border-radius: 12px;
@@ -198,8 +201,8 @@ function initMap(latitude, longitude, digipinLabel) {
 
     // Add circle to show precision area
     L.circle([latitude, longitude], {
-        color: '#2563eb',
-        fillColor: '#2563eb',
+        color: '#4F46E5',
+        fillColor: '#4F46E5',
         fillOpacity: 0.15,
         radius: 2.83
     }).addTo(map);
@@ -210,7 +213,7 @@ function initMap(latitude, longitude, digipinLabel) {
     }, 100);
 }
 
-// Generate DIGIPIN Handler
+// Generate DIGIPIN Handler (GPS)
 async function handleGenerate() {
     generateBtn.disabled = true;
     showLoading();
@@ -229,11 +232,54 @@ async function handleGenerate() {
         hideLoading();
         displayResults();
 
+        // Update inputs to match
+        manualLatInput.value = currentLocation.latitude.toFixed(6);
+        manualLonInput.value = currentLocation.longitude.toFixed(6);
+
     } catch (error) {
         hideLoading();
         showError(error.message);
     } finally {
         generateBtn.disabled = false;
+    }
+}
+
+// Generate DIGIPIN Handler (Manual)
+async function handleManualGenerate() {
+    const lat = parseFloat(manualLatInput.value);
+    const lon = parseFloat(manualLonInput.value);
+
+    if (isNaN(lat) || isNaN(lon)) {
+        showError('Please enter valid latitude and longitude values.');
+        return;
+    }
+    
+    if (lat < -90 || lat > 90 || lon < -180 || lon > 180) {
+        showError('Coordinates out of range.');
+        return;
+    }
+
+    manualGenerateBtn.disabled = true;
+    showLoading();
+    hideError();
+    resultSection.style.display = 'none';
+
+    try {
+        currentLocation = { latitude: lat, longitude: lon };
+
+        // Encode to DIGIPIN
+        const data = await encodeDigipin(lat, lon);
+        currentDigipin = data.digipin;
+
+        // Display results
+        hideLoading();
+        displayResults();
+
+    } catch (error) {
+        hideLoading();
+        showError(error.message);
+    } finally {
+        manualGenerateBtn.disabled = false;
     }
 }
 
@@ -337,6 +383,10 @@ function showDecodeOnMap() {
     // Update current location state
     currentLocation = { latitude: lat, longitude: lon };
     currentDigipin = digipin;
+    
+    // Fill manual inputs
+    manualLatInput.value = lat;
+    manualLonInput.value = lon;
 
     // Display results in the main result section
     digipinCode.textContent = digipin;
@@ -371,6 +421,7 @@ tabBtns.forEach(btn => {
 
 // Event Listeners
 generateBtn.addEventListener('click', handleGenerate);
+manualGenerateBtn.addEventListener('click', handleManualGenerate);
 copyBtn.addEventListener('click', copyToClipboard);
 googleMapsBtn.addEventListener('click', openGoogleMaps);
 shareBtn.addEventListener('click', shareDigipin);

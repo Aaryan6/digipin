@@ -13,11 +13,19 @@
 
     <!-- Google Fonts -->
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
 
     <link rel="stylesheet" href="styles.css" />
+
+    <!-- Vercel Analytics -->
+    <script type="module">
+      import { inject } from "https://vercel.live/_next-live/feedback/feedback.js"; // Placeholder check
+      // Actually using the correct package from esm.sh for analytics
+      import { inject as injectAnalytics } from "https://esm.sh/@vercel/analytics";
+      injectAnalytics();
+    </script>
   </head>
   <body>
     <div class="app-container">
@@ -33,17 +41,21 @@
         </div>
         <nav class="nav-links">
           <a href="#" class="nav-link active">Home</a>
-          <a href="/api-docs" target="_blank" class="nav-link">API Docs</a>
+          <a href="/api-docs" class="nav-link">API Docs</a>
         </nav>
       </header>
 
       <!-- Main Content -->
       <main class="main-content">
         <div class="hero-section">
-          <h1 class="hero-title">Location, Simplified.</h1>
+          <div class="hero-badge">Official Standard</div>
+          <h1 class="hero-title">Get Your DIGIPIN</h1>
           <p class="hero-subtitle">
             Generate or decode precise 4m x 4m location codes instantly.
           </p>
+          <div class="example-pill">
+            Example: <span class="mono">4P3-JK8-52C9</span>
+          </div>
         </div>
 
         <div class="interaction-card">
@@ -56,10 +68,34 @@
           <!-- Generate View -->
           <div id="generateTab" class="tab-content active">
             <div class="generate-wrapper">
-              <button id="generateBtn" class="btn-primary large-btn">
+              <button
+                id="generateBtn"
+                class="btn-primary large-btn pulse-effect"
+              >
                 <span class="icon">📍</span>
                 <span>Get My Current Location</span>
               </button>
+
+              <div class="manual-section">
+                <div class="divider-text">or enter manually</div>
+                <div class="input-row">
+                  <input
+                    type="number"
+                    id="manualLat"
+                    placeholder="Latitude (e.g. 28.6139)"
+                    step="any"
+                  />
+                  <input
+                    type="number"
+                    id="manualLon"
+                    placeholder="Longitude (e.g. 77.2090)"
+                    step="any"
+                  />
+                </div>
+                <button id="manualGenerateBtn" class="btn-secondary full-width">
+                  Generate from Coordinates
+                </button>
+              </div>
 
               <div id="loadingMsg" class="status-msg" style="display: none">
                 <div class="spinner"></div>
@@ -121,12 +157,13 @@
               <input
                 type="text"
                 id="decodeInput"
-                placeholder="Enter DIGIPIN (e.g. 4P3-JK8-52C9)"
+                placeholder="Enter DIGIPIN"
                 maxlength="12"
                 autocomplete="off"
               />
               <button id="decodeBtn" class="btn-primary">Find</button>
             </div>
+            <p class="input-hint">Format: XXX-XXX-XXXX</p>
 
             <div
               id="decodeResult"
